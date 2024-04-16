@@ -42,7 +42,8 @@ std::unordered_map<std::string, Suit> StringToSuit = {
 
 class Card{
     friend class Deck;
-    private:
+    friend class WinCheck;
+
     Value val;
     Suit suit;
 
@@ -63,6 +64,11 @@ class Card{
     bool operator<=(const Card& b) {return !(*this > b);} 
     bool operator>=(const Card& b) {return !(*this < b);}
     bool operator!=(const Card& b) {return !(*this == b);}
+
+    static Value nextRank(Value val){
+        if(val == Value::Ace) return Value::Ace;
+        return (Value) (((int) val) + 1);
+    }
 };
 
 
@@ -149,3 +155,4 @@ std::ostream& operator<<(std::ostream& os, const Card &card) {
 
     return os;
 }
+
