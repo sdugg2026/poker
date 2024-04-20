@@ -68,7 +68,6 @@ class Game{
     uint NUM_OPPONENTS;
     
     double numWins = 0, totalSimulations = 0;
-    private:
 
     class Deck{
         friend class Game;
@@ -84,11 +83,24 @@ class Game{
             }}
             
         }
+        Deck(const Card& a, const Card& b){
+            deck.reserve(50);
+            for(auto ValEntry: StringToVal){ for(auto SuitEntry: StringToSuit){
+                if(ValEntry.second == a.get_Val() && SuitEntry.second == a.get_Suit()) continue;
+                if(ValEntry.second == b.get_Val() && SuitEntry.second == b.get_Suit()) continue;
+                
+                deck.emplace_back(ValEntry.second, SuitEntry.second);
+            }}
+        }
 
         Deck(const Deck& other){ for(const auto &a: other.deck) deck.push_back(a) ;}
 
         const Card deal();
+
         void reset();
+        void reset(Card a, Card b);
+
+
         void shuffle();
     };
 
@@ -101,8 +113,10 @@ class Game{
     public:
 
     Game(playerHand in, int numSim, uint numOpps = 1): 
+    
     NUM_SIMULATIONS(numSim), 
-    NUM_OPPONENTS(numOpps) 
+    NUM_OPPONENTS(numOpps), 
+    GameDeck(in.first, in.second)
     {
         USER_HAND = {std::move(in.first), std::move(in.second)};
     }
@@ -110,8 +124,10 @@ class Game{
 
     void simulate(){
         std::cout << std::endl;
+
         while(NUM_SIMULATIONS--){
             GameDeck.shuffle();
+
             for(uint i = 0; i < NUM_OPPONENTS; i++) OPPONENTS_HANDS.push_back({GameDeck.deal(), GameDeck.deal()});
             while(CommunityCards.size() != 5) CommunityCards.push_back(GameDeck.deal());
 
@@ -142,14 +158,12 @@ class Game{
                 numWins++;
                 //std::cout << "Win\n";
             } 
-            /*else std::cout << "Lose\n";
+            //else std::cout << "Lose\n";
 
-            std::cout << "////////////////////////////////////////\n";*/
-
-            
+            //std::cout << "////////////////////////////////////////\n";
 
             OPPONENTS_HANDS.clear();
-            GameDeck.reset();
+            GameDeck.reset(USER_HAND.first, USER_HAND.second);
             CommunityCards.clear();
             totalSimulations++;
         }
@@ -157,7 +171,8 @@ class Game{
 
     void printResults(){
         std::cout << "\nUser Hand:\n" << USER_HAND.first << USER_HAND.second;
-        std::cout << numWins/totalSimulations << std::endl;
+        std::cout << "Probability of winning: "
+        << numWins/totalSimulations << std::endl;
     }
 };
 
@@ -169,6 +184,10 @@ class Game{
 //********** MESSY IMPLEMENTATIONS THAT NOONE CARES ABOUT **********//
 void Game::Deck::reset(){
     Deck temp;
+    std::swap(temp.deck, this->deck);
+}
+void Game::Deck::reset(Card one, Card two){
+    Deck temp(one, two);
     std::swap(temp.deck, this->deck);
 }
 
@@ -184,7 +203,7 @@ void Game::Deck::shuffle(){
     for (int i=0; i<(int)deck.size() ;i++)
     {
         int r = rng();
-        std::swap(deck[(uint)i], deck[(uint)r]);
+        std::swap(deck[(uint)i], deck[(uint)r % deck.size()]);
     }
 }
 

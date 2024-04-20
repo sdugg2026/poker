@@ -39,6 +39,7 @@ int main(int argc, char*argv[]){
     playerHand user;
     std::cin >> user.first >> user.second;
 
+    
 
     Game g(user, NumSimulations);
     g.simulate();
