@@ -1,0 +1,45 @@
+.App {
+  text-align: center;
+}
+
+.allcards{
+  width: 700px;
+  padding:15px;
+  border-color: black;
+  float: left;
+}
+
+.Card{
+  background-color: white;
+  width: 70px;
+}
+
+.btn-inactive{
+  border: 2px solid white;
+}
+
+.btn-active{
+  border: 2px solid rgb(6, 185, 245);
+}
+
+.label{
+  padding-top: 150px;
+  line-height: 90px;
+}
+
+h1{
+  color: white;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+h2{
+  color: white;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.btn{
+  background-color: green;
+  font-family: 'Times New Roman', Times, serif;
+  color: white;
+}
+
